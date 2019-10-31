@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="hEWQQjOhfmc9G0PflSRObQLRaP5FneSJW5uS5ru5">
-    <link rel="shortcut icon" href="http://pages/vendor/telescope/favicon.ico">
+    <link rel="shortcut icon" href="https://cloud.google.com/_static/47b8b6d10c/images/cloud/icons/favicons/onecloud/favicon.ico">
 
     <title>Telescope - Codeigniter</title>
 
@@ -10728,26 +10728,26 @@
 
         <div class="container mb-5">
             <div class="d-flex align-items-center py-4 header">
-                <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
-                    <path class="fill-primary" d="M0 40a39.87 39.87 0 0 1 11.72-28.28A40 40 0 1 1 0 40zm34 10a4 4 0 0 1-4-4v-2a2 2 0 1 0-4 0v2a4 4 0 0 1-4 4h-2a2 2 0 1 0 0 4h2a4 4 0 0 1 4 4v2a2 2 0 1 0 4 0v-2a4 4 0 0 1 4-4h2a2 2 0 1 0 0-4h-2zm24-24a6 6 0 0 1-6-6v-3a3 3 0 0 0-6 0v3a6 6 0 0 1-6 6h-3a3 3 0 0 0 0 6h3a6 6 0 0 1 6 6v3a3 3 0 0 0 6 0v-3a6 6 0 0 1 6-6h3a3 3 0 0 0 0-6h-3zm-4 36a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM21 28a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
-                </svg>
+                <img src="https://www.gstatic.com/images/branding/product/1x/google_cloud_48dp.png" width="26">
 
-                <h4 class="mb-0 ml-3"><strong>Codeigniter</strong> Telescope</h4>
+                <h4 class="mb-0 ml-2">Codeigniter Telescope</h4>
 
-                <button title="Auto Load Entries" class="btn btn-outline-primary ml-auto mr-3">
+                <button title="Auto Load Entries" class="btn btn-outline-primary ml-auto mr-3 active" id="btnAutoLoad">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon fill-primary">
                         <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"></path>
                     </svg>
                 </button>
-                
-                <?php if($currentFile): ?>
+
+                <?php if ($currentFile) : ?>
+                    <input type="hidden" value="<?= base64_encode($currentFile); ?>" id="currentFile">
+                    <input type="hidden" value="<?= !empty($lastModifiedTime) ? $lastModifiedTime : 0 ?>" id="lastModifiedTime">
                     <a href="?dl=<?= base64_encode($currentFile); ?>" title="Download file" class="btn btn-outline-primary mr-3">
                         Download File
                     </a>
                     <a id="delete-log" href="?del=<?= base64_encode($currentFile); ?>" title="Delete file" class="btn btn-outline-primary mr-3">
                         Delete File
                     </a>
-                    <?php if(count($files) > 1): ?>
+                    <?php if (count($files) > 1) : ?>
                         <a id="delete-all-log" href="?del=<?= base64_encode("all"); ?>" title="Delete all files" class="btn btn-outline-primary mr-3">
                             Delete all files
                         </a>
@@ -10757,11 +10757,11 @@
 
             <div class="row mt-4">
                 <div class="col-2 sidebar">
-                    <ul class="nav flex-column">
+                    <ul class="nav flex-column" id="lstFiles">
                         <?php if (!empty($files)) : ?>
                             <?php foreach ($files as $file) : ?>
                                 <li class="nav-item">
-                                    <a href="?f=<?= base64_encode($file); ?>" class="nav-link d-flex align-items-center pt-0 <?= ($currentFile == $file) ? "active" : "" ?>">
+                                    <a href="?f=<?= base64_encode($file); ?>" data-id="<?= base64_encode($file); ?>" class="nav-link d-flex align-items-center pt-0 <?= ($currentFile == $file) ? "active" : "" ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                             <path d="M0 3c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3zm2 2v12h16V5H2zm8 3l4 5H6l4-5z"></path>
                                         </svg>
@@ -10787,33 +10787,33 @@
                                 <h5>Logs</h5> <input type="text" id="searchInput" placeholder="Search Tag" class="form-control w-25">
                             </div>
                             <?php if (!empty($logs)) : ?>
-                            <table id="indexScreen" class="table table-hover table-sm mb-0 penultimate-column-right">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Message</th>
-                                        <th scope="col">Level</th>
-                                        <th scope="col">Happened</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($logs as $key => $log) : ?>
+                                <table id="indexScreen" class="table table-hover table-sm mb-0 penultimate-column-right">
+                                    <thead>
                                         <tr>
-                                            <td><?= $log['content']; ?></td>
-                                            <td class="table-fit">
-                                                <span class="badge font-weight-light <?= strtolower($log['level']) == 'error' ? 'badge-danger' : 'badge-info' ?>"><?= strtolower($log['level']) ?></span>
-                                            </td>
-                                            <td class="table-fit"><?= $log['date']; ?></td>
+                                            <th scope="col">Message</th>
+                                            <th scope="col">Level</th>
+                                            <th scope="col">Happened</th>
                                         </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($logs as $key => $log) : ?>
+                                            <tr>
+                                                <td><?= $log['content']; ?></td>
+                                                <td class="table-fit">
+                                                    <span class="badge font-weight-light <?= strtolower($log['level']) == 'error' ? 'badge-danger' : 'badge-info' ?>"><?= strtolower($log['level']) ?></span>
+                                                </td>
+                                                <td class="table-fit"><?= $log['date']; ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
                             <?php else : ?>
-                            <div class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin mr-2 fill-text-color">
-                                    <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
-                                </svg>
-                                <span>Scanning...</span>
-                            </div>
+                                <div class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin mr-2 fill-text-color">
+                                        <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
+                                    </svg>
+                                    <span>Scanning...</span>
+                                </div>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
@@ -10822,33 +10822,64 @@
 
         </div>
     </div>
-    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/plug-ins/9dcbecd42ad/integration/bootstrap/3/dataTables.bootstrap.js"></script>
     <script>
-        $(document).ready(function () {
-
-            $('.table-container tr').on('click', function () {
+        $(document).ready(function() {
+            $('.table-container tr').on('click', function() {
                 $('#' + $(this).data('display')).toggle();
             });
-
             $('#table-log').DataTable({
                 "order": [],
                 "stateSave": true,
-                "stateSaveCallback": function (settings, data) {
+                "stateSaveCallback": function(settings, data) {
                     window.localStorage.setItem("datatable", JSON.stringify(data));
                 },
-                "stateLoadCallback": function (settings) {
+                "stateLoadCallback": function(settings) {
                     var data = JSON.parse(window.localStorage.getItem("datatable"));
                     if (data) data.start = 0;
                     return data;
                 }
             });
-            $('#delete-log, #delete-all-log').click(function () {
+            $('#delete-log, #delete-all-log').click(function() {
                 return confirm('Are you sure?');
             });
+
+            if ($('#currentFile').length > 0) {
+                setInterval(function() {
+                    checkChange();
+                }, 1000);   
+            }
+
+            $('#btnAutoLoad').click(function(){
+                if($(this).hasClass("active")) {
+                    $(this).removeClass("active");
+                } else {
+                    $(this).addClass("active");
+                }
+            });
         });
+
+        function checkChange()
+        {
+            if($('#btnAutoLoad').hasClass('active'))
+            {
+                var file = $('#currentFile').val();
+                var currentTime = $('#lastModifiedTime').val();
+
+                $.ajax({
+                    url: "/logs/get_last_update/?f=" + file,
+                    success: function(lastTime) {
+                        if(lastTime != currentTime) {
+                            // $('#lastModifiedTime').val(lastTime);
+                            location.reload();
+                        }
+                    }
+                });
+            }
+        }
     </script>
 </body>
 

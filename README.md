@@ -1,13 +1,13 @@
 # Codeigniter Telescope
 
-Install (Codeigniter)
+Install
 -----------------
 Install via composer
 ```
 composer require toanlk/codeigniter_telescope
 ```
 
-Composer Autoload
+Autoload
 -----------------
 Edit application/config/config.php:
 ```
@@ -21,22 +21,38 @@ The folder path for log files can be configured by adding clv_log_folder_path to
 $config['ci_telescope_log_folder_path'] = STORAGE_PATH.'/storage/logs/';
 ```
 
-Controller Integration for Browser Display
+Integration
 -----------------
-All that is required is to execute the showLogs() method in a Controller that is mapped to a route:
+All that is required is to execute the show() method in a Controller that is mapped to a route:
 
-A typical Controller (LogViewerController.php) will have the following content:
+A typical Controller (Logs.php) will have the following content:
 ```
-private $logViewer;
+class Logs extends CI_Controller
+{
+    private $logViewer;
 
-public function __construct() {
-    parent::__construct(); 
-    $this->logViewer = new \CI_Telescope\CI_Telescope();
-    //...
-}
+    public function __construct()
+	{
+        parent::__construct(); 
+        $this->logViewer = new \CI_Telescope\CI_Telescope();
+    }
 
-public function index() {
-    echo $this->logViewer->show();
-    return;
+	public function index()
+	{
+        echo $this->logViewer->show();
+    }
+    
+    // --------------------------------------------------------------------
+
+    public function get_last_update()
+    {
+        $file_name = $this->input->get('f');
+
+        $file_name = base64_decode($file_name);
+
+        $last_modified = $this->logViewer->get_last_modified($file_name);
+
+        echo $last_modified;
+    }
 }
 ```

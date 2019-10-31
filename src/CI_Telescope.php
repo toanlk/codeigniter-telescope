@@ -49,7 +49,7 @@ class CI_Telescope
     private $LOG_VIEW_FILE_PATH = "";
 
     // this is the name of the view file passed to CI load->view()
-    const CI_LOG_VIEW_FILE_PATH = " ci_telescope/logs_view";
+    const CI_LOG_VIEW_FILE_PATH = "ci_telescope/logs_view";
 
     const MAX_LOG_SIZE = 52428800; // 50MB
     const MAX_STRING_LENGTH = 300; // 300 chars
@@ -168,9 +168,17 @@ class CI_Telescope
             }
 
             // newest first
-            $logs = array_reverse($logs);
+            if(!empty($logs))
+            {
+                $logs = array_reverse($logs);
+            }
         } else {
             $logs = [];
+        }
+
+        if(!empty($files))
+        {
+            $data['lastModifiedTime'] = $this->get_last_modified($files[0]);
         }
 
         $data['logs'] = $logs;
@@ -344,7 +352,7 @@ class CI_Telescope
             $fileSize = filesize($currentFile);
 
             if (is_int($fileSize) && $fileSize > self::MAX_LOG_SIZE) {
-                //trigger a download of the current file instead
+                // trigger a download of the current file instead
                 $logs = null;
             } else {
                 $logs =  $this->getLogsForAPI($currentFile, $singleLine);
@@ -463,8 +471,8 @@ class CI_Telescope
 
         $finalFiles = [];
 
-        //if we're to return the base name of the files
-        //let's do that here
+        // if we're to return the base name of the files
+        // let's do that here
         foreach ($files as $file) {
             array_push($finalFiles, ["file_b64" => base64_encode(basename($file)), "file_name" => basename($file)]);
         }
@@ -518,8 +526,7 @@ class CI_Telescope
      */
     private function prepareRawFileName($fileNameInBase64)
     {
-
-        //let's determine what the current log file is
+        // let's determine what the current log file is
         if (!is_null($fileNameInBase64) && !empty($fileNameInBase64)) {
             $currentFile = $this->logFolderPath . "/" . basename(base64_decode($fileNameInBase64));
         } else {
@@ -527,5 +534,18 @@ class CI_Telescope
         }
 
         return $currentFile;
+    }
+
+    // --------------------------------------------------------------------
+
+    public function get_last_modified($file_name)
+    {
+        $full_path = $this->logFolderPath . "/" . $file_name;
+        if(file_exists( $full_path))
+        {
+            return filemtime($full_path);
+        }
+        
+        return 0;
     }
 }
