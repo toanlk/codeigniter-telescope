@@ -166,6 +166,9 @@ class CI_Telescope
             } else {
                 $logs =  $this->processLogs($this->getLogs($currentFile));
             }
+
+            // newest first
+            $logs = array_reverse($logs);
         } else {
             $logs = [];
         }

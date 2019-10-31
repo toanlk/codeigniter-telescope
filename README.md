@@ -18,7 +18,7 @@ $config['composer_autoload'] = realpath(APPPATH . '../vendor/autoload.php');
 
 The folder path for log files can be configured by adding clv_log_folder_path to Codeigniter config.php file e.g.
 ```
-$config["ci_telescope_log_folder_path"] = STORAGE_PATH.'/storage/logs/';
+$config['ci_telescope_log_folder_path'] = STORAGE_PATH.'/storage/logs/';
 ```
 
 Controller Integration for Browser Display
