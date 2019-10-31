@@ -1,0 +1,19 @@
+{
+    "name": "toanlk/codeigniter_telescope",
+    "description": "A simple log viewer for Codeigniter",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Le Khanh Toan",
+            "email": "toanlk0811@gmail.com"
+        }
+    ],
+    "require": {
+		"php": ">=5.4.8"
+	},
+    "autoload": {
+        "psr-4": {
+            "CI_Telescope\\": "src/"
+          }
+    }
+}
