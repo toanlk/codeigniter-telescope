@@ -14,6 +14,8 @@ class CI_Telescope
         'ERROR' => 'glyphicon glyphicon-warning-sign',
         'DEBUG' => 'glyphicon glyphicon-exclamation-sign',
         'ALL'   => 'glyphicon glyphicon-minus',
+        'TRACE' => 'glyphicon glyphicon-info-sign',
+        'FATAL' => 'glyphicon glyphicon-exclamation-sign',
     ];
 
     private static $levelClasses = [
@@ -21,11 +23,13 @@ class CI_Telescope
         'ERROR' => 'danger',
         'DEBUG' => 'warning',
         'ALL'   => 'muted',
+        'TRACE' => 'trace',
+        'FATAL' => 'fatal',
     ];
 
-    const LOG_LINE_START_PATTERN = "/((INFO)|(ERROR)|(DEBUG)|(ALL))[\s\-\d:\.\/]+(-->)/";
-    const LOG_DATE_PATTERN = ["/^((ERROR)|(INFO)|(DEBUG)|(ALL))\s\-\s/", "/\s(-->)/"];
-    const LOG_LEVEL_PATTERN = "/^((ERROR)|(INFO)|(DEBUG)|(ALL))/";
+    const LOG_LINE_START_PATTERN = "/((INFO)|(ERROR)|(DEBUG)|(ALL)|(TRACE)|(FATAL))[\s\-\d:\.\/]+(-->)/";
+    const LOG_DATE_PATTERN = ["/^((ERROR)|(INFO)|(DEBUG)|(ALL)|(TRACE)|(FATAL))\s\-\s/", "/\s(-->)/"];
+    const LOG_LEVEL_PATTERN = "/^((ERROR)|(INFO)|(DEBUG)|(ALL)|(TRACE)|(FATAL))/";
 
     // this is the path (folder) on the system where the log files are stored
     private $logFolderPath;
@@ -53,6 +57,7 @@ class CI_Telescope
 
     const MAX_LOG_SIZE = 52428800; // 50MB
     const MAX_STRING_LENGTH = 300; // 300 chars
+    const MAX_LOG_LINE = 5000;
 
     /**
      * These are the constants representing the
@@ -79,7 +84,6 @@ class CI_Telescope
      */
     private function init()
     {
-
         if (!function_exists("get_instance")) {
             throw new \Exception("This library works in a Codeigniter Project/Environment");
         }
@@ -156,6 +160,8 @@ class CI_Telescope
         // just trigger a download of the file
         // otherwise process its content as log
 
+        $logs = [];
+
         if (!is_null($currentFile) && file_exists($currentFile)) {
 
             $fileSize = filesize($currentFile);
@@ -164,20 +170,16 @@ class CI_Telescope
                 // trigger a download of the current file instead
                 $logs = null;
             } else {
-                $logs =  $this->processLogs($this->getLogs($currentFile));
+                $logs = $this->processLogs($this->getLogs($currentFile));
             }
 
             // newest first
-            if(!empty($logs))
-            {
+            if (!empty($logs)) {
                 $logs = array_reverse($logs);
             }
-        } else {
-            $logs = [];
         }
 
-        if(!empty($files))
-        {
+        if (!empty($files)) {
             $data['lastModifiedTime'] = $this->get_last_modified($files[0]);
         }
 
@@ -232,7 +234,6 @@ class CI_Telescope
                     $fileExists = file_exists($this->logFolderPath);
                 }
 
-
                 if ($fileExists) {
                     $this->deleteFiles($file);
                     $response["status"] = true;
@@ -277,7 +278,11 @@ class CI_Telescope
 
         $superLog = [];
 
-        foreach ($logs as $log) {
+        foreach ($logs as $k => $log) {
+
+            if($k > self::MAX_LOG_LINE) {
+                break;
+            }
 
             // get the log line Start
             $logLineStart = $this->getLogLineStart($log);
@@ -441,6 +446,7 @@ class CI_Telescope
     private function getFiles($basename = true)
     {
         $files = glob($this->fullLogFilePath);
+        $files = !is_array($files) ? [] : $files;
 
         $files = array_reverse($files);
         $files = array_filter($files, 'is_file');
@@ -465,6 +471,7 @@ class CI_Telescope
     private function getFilesBase64Encoded()
     {
         $files = glob($this->fullLogFilePath);
+        $files = !is_array($files) ? [] : $files;
 
         $files = array_reverse($files);
         $files = array_filter($files, 'is_file');
@@ -486,9 +493,10 @@ class CI_Telescope
      * */
     private function deleteFiles($fileName)
     {
-
         if ($fileName == "all") {
-            array_map("unlink", glob($this->fullLogFilePath));
+            $files = glob($this->fullLogFilePath);
+            $files = !is_array($files) ? [] : $files;
+            array_map("unlink", $files);
         } else {
             unlink($this->logFolderPath . "/" . basename($fileName));
         }
@@ -541,11 +549,10 @@ class CI_Telescope
     public function get_last_modified($file_name)
     {
         $full_path = $this->logFolderPath . "/" . $file_name;
-        if(file_exists( $full_path))
-        {
+        if (file_exists($full_path)) {
             return filemtime($full_path);
         }
-        
+
         return 0;
     }
 }

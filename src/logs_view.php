@@ -10800,7 +10800,7 @@
                                             <tr>
                                                 <td><?= $log['content']; ?></td>
                                                 <td class="table-fit">
-                                                    <span class="badge font-weight-light <?= strtolower($log['level']) == 'error' ? 'badge-danger' : 'badge-info' ?>"><?= strtolower($log['level']) ?></span>
+                                                    <span class="badge font-weight-light <?= strtolower($log['level']) == 'error' || strtolower($log['level']) == 'fatal' ? 'badge-danger' : 'badge-info' ?>"><?= strtolower($log['level']) ?></span>
                                                 </td>
                                                 <td class="table-fit"><?= $log['date']; ?></td>
                                             </tr>
