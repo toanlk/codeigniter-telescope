@@ -141,6 +141,19 @@ class CI_Telescope
             return $this->processAPIRequests($this->CI->input->get(self::API_QUERY_PARAM));
         }
 
+        // auto refresh
+        $auto_refresh =  $this->CI->input->get("auto_refresh");
+
+        if (!empty($auto_refresh)) {
+            if ($auto_refresh == 'off') {
+                $auto_refresh = false;
+            } else if ($auto_refresh == 'on') {
+                $auto_refresh = true;
+            } else {
+                $auto_refresh = false;
+            }
+        }
+
         // it will either get the value of f or return null
         $fileName =  $this->CI->input->get("f");
 
@@ -172,17 +185,14 @@ class CI_Telescope
             } else {
                 $logs = $this->processLogs($this->getLogs($currentFile));
             }
-
-            // newest first
-            if (!empty($logs)) {
-                $logs = array_reverse($logs);
-            }
         }
 
+        $data['lastModifiedTime'] = 0;
         if (!empty($files)) {
-            $data['lastModifiedTime'] = $this->get_last_modified($files[0]);
+            $data['lastModifiedTime'] = $this->get_latest_modified($files);
         }
 
+        $data['auto_refresh'] = $auto_refresh;
         $data['logs'] = $logs;
         $data['files'] =  !empty($files) ? $files : [];
         $data['currentFile'] = !is_null($currentFile) ? basename($currentFile) : "";
@@ -278,9 +288,12 @@ class CI_Telescope
 
         $superLog = [];
 
+        // newest first
+        $logs = array_reverse($logs);
+
         foreach ($logs as $k => $log) {
 
-            if($k > self::MAX_LOG_LINE) {
+            if ($k > self::MAX_LOG_LINE) {
                 break;
             }
 
@@ -546,6 +559,21 @@ class CI_Telescope
 
     // --------------------------------------------------------------------
 
+    function get_latest_modified($files)
+    {
+        $lastModifiedTime = 0;
+        foreach ($files as $file) {
+            $currentModifiedTime = $this->get_last_modified($file);
+            if ($currentModifiedTime > $lastModifiedTime) {
+                $lastModifiedTime = $currentModifiedTime;
+            }
+        }
+
+        return $lastModifiedTime;
+    }
+
+    // --------------------------------------------------------------------
+
     public function get_last_modified($file_name)
     {
         $full_path = $this->logFolderPath . "/" . $file_name;
@@ -554,5 +582,45 @@ class CI_Telescope
         }
 
         return 0;
+    }
+
+    // --------------------------------------------------------------------
+
+    public function get_last_logs()
+    {
+        $data = ['is_modified' => false];
+
+        $file_name = $this->CI->input->get('f');
+        $last_updated = $this->CI->input->get('t');
+
+        $files = $this->getFiles();
+        $latest_modified = $this->get_latest_modified($files);
+
+        if ($last_updated != $latest_modified) {
+            $logs = [];
+
+            if (!empty($file_name)) {
+                $currentFile = base64_decode($file_name);;
+            } else {
+                $currentFile = $files[0];
+            }
+
+            $currentFile = $this->logFolderPath . "/" . $currentFile;
+            
+            if (file_exists($currentFile)) {
+                $fileSize = filesize($currentFile);
+
+                if (is_int($fileSize) && $fileSize > self::MAX_LOG_SIZE) {
+                    // trigger a download of the current file instead
+                    $logs = null;
+                } else {
+                    $logs = $this->processLogs($this->getLogs($currentFile));
+                }
+            }
+
+            $data = ['logs' => $logs, 'is_modified' => true, 'last_modified_time' => $latest_modified];
+        }
+
+        echo json_encode($data);
     }
 }

@@ -10732,7 +10732,7 @@
 
                 <h4 class="mb-0 ml-2">Codeigniter Telescope</h4>
 
-                <button title="Auto Load Entries" class="btn btn-outline-primary ml-auto mr-3" id="btnAutoLoad">
+                <button title="Auto Load Entries" class="btn btn-outline-primary ml-auto mr-3 <?= !empty($auto_refresh) ? 'active' : '' ?>" id="btnAutoLoad">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon fill-primary">
                         <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"></path>
                     </svg>
@@ -10786,35 +10786,32 @@
                             <div class="card-header d-flex align-items-center justify-content-between">
                                 <h5>Logs</h5> <input type="text" id="searchInput" placeholder="Search Tag" class="form-control w-25">
                             </div>
-                            <?php if (!empty($logs)) : ?>
-                                <table id="indexScreen" class="table table-hover table-sm mb-0 penultimate-column-right">
-                                    <thead>
+                            <table id="indexScreen" class="table table-hover table-sm mb-0 penultimate-column-right <?=empty($logs) ? 'd-none': ''?>">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Message</th>
+                                        <th scope="col">Level</th>
+                                        <th scope="col">Happened</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="logData">
+                                    <?php foreach ($logs as $key => $log) : ?>
                                         <tr>
-                                            <th scope="col">Message</th>
-                                            <th scope="col">Level</th>
-                                            <th scope="col">Happened</th>
+                                            <td><?= $log['content']; ?></td>
+                                            <td class="table-fit">
+                                                <span class="badge font-weight-light <?= strtolower($log['level']) == 'error' || strtolower($log['level']) == 'fatal' ? 'badge-danger' : 'badge-info' ?>"><?= strtolower($log['level']) ?></span>
+                                            </td>
+                                            <td class="table-fit"><?= $log['date']; ?></td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($logs as $key => $log) : ?>
-                                            <tr>
-                                                <td><?= $log['content']; ?></td>
-                                                <td class="table-fit">
-                                                    <span class="badge font-weight-light <?= strtolower($log['level']) == 'error' || strtolower($log['level']) == 'fatal' ? 'badge-danger' : 'badge-info' ?>"><?= strtolower($log['level']) ?></span>
-                                                </td>
-                                                <td class="table-fit"><?= $log['date']; ?></td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            <?php else : ?>
-                                <div class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin mr-2 fill-text-color">
-                                        <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
-                                    </svg>
-                                    <span>Scanning...</span>
-                                </div>
-                            <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                            <div id="logScanning" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius <?=!empty($logs) ? 'd-none': ''?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon spin mr-2 fill-text-color">
+                                    <path d="M12 10a2 2 0 0 1-3.41 1.41A2 2 0 0 1 10 8V0a9.97 9.97 0 0 1 10 10h-8zm7.9 1.41A10 10 0 1 1 8.59.1v2.03a8 8 0 1 0 9.29 9.29h2.02zm-4.07 0a6 6 0 1 1-7.25-7.25v2.1a3.99 3.99 0 0 0-1.4 6.57 4 4 0 0 0 6.56-1.42h2.1z"></path>
+                                </svg>
+                                <span>Scanning...</span>
+                            </div>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -10847,37 +10844,135 @@
                 return confirm('Are you sure?');
             });
 
-            if ($('#currentFile').length > 0) {
-                setInterval(function() {
-                    checkChange();
-                }, 1000);   
-            }
+            setInterval(function() {
+                checkChange();
+            }, 1000);
 
-            $('#btnAutoLoad').click(function(){
-                if($(this).hasClass("active")) {
+            $('#btnAutoLoad').click(function() {
+                if ($(this).hasClass("active")) {
                     $(this).removeClass("active");
+                    removeQueryString('auto_refresh');
                 } else {
+                    changeQueryString('auto_refresh', 'on');
                     $(this).addClass("active");
                 }
             });
         });
 
-        function checkChange()
-        {
-            if($('#btnAutoLoad').hasClass('active'))
-            {
+        function checkChange() {
+            if ($('#btnAutoLoad').hasClass('active')) {
                 var file = $('#currentFile').val();
                 var currentTime = $('#lastModifiedTime').val();
 
+                if (file === undefined) {
+                    file = '';
+                }
+                if (currentTime === undefined) {
+                    currentTime = 0;
+                }
+
                 $.ajax({
-                    url: "/logs/get_last_update/?f=" + file,
-                    success: function(lastTime) {
-                        if(lastTime != currentTime) {
-                            // $('#lastModifiedTime').val(lastTime);
-                            location.reload();
+                    url: "/logs/get_last_logs/?f=" + file + "&t=" + currentTime,
+                    success: function(data) {
+                        var data = JSON.parse(data);
+                        if (data.is_modified) {
+                            $('#lastModifiedTime').val(data.last_modified_time);
+                            $('#logData').empty();
+
+                            if(data.logs) {
+                                $('#indexScreen').removeClass('d-none');
+                                $.each(data.logs, function(i, item) {
+                                    var $level = item.level.toLowerCase();
+                                    var $levelClass = $level == 'error' || $level == 'fatal' ? 'badge-danger' : 'badge-info';
+                                    var $levelContent = '<span class="badge font-weight-light ' + $levelClass + '">' + $level + '</span>';
+                                    var $tr = $('<tr>').append(
+                                        $('<td>').text(item.content),
+                                        $('<td class="table-fit">').html($levelContent),
+                                        $('<td class="table-fit">').text(item.date)
+                                    );
+                                    $('#logData').append($tr);
+                                });
+                            } else {
+                                $('#indexScreen').addClass('d-none');
+                                $('#logScanning').removeClass('d-none');
+                            }
+
+                            if(data.last_modified_time == 0 || currentTime == 0) {
+                                location.reload();
+                            }
                         }
                     }
                 });
+            }
+        }
+
+        function changeQueryString(key, value) {
+            if (history.pushState) {
+                // Get query string value
+                var searchUrl = location.search;
+                if (searchUrl.indexOf("?") == "-1") {
+                    var urlValue = '?' + key + '=' + value;
+                    history.pushState({
+                        state: 1,
+                        rand: Math.random()
+                    }, '', urlValue);
+                } else {
+                    // Check for key in query string, if not present
+                    if (searchUrl.indexOf(key) == "-1") {
+                        var urlValue = searchUrl + '&' + key + '=' + value;
+                    } else { // If key present in query string
+                        oldValue = getParameterByName(key);
+                        if (searchUrl.indexOf("?" + key + "=") != "-1") {
+                            urlValue = searchUrl.replace('?' + key + '=' + oldValue, '?' + key + '=' + value);
+                        } else {
+                            urlValue = searchUrl.replace('&' + key + '=' + oldValue, '&' + key + '=' + value);
+                        }
+                    }
+                    history.pushState({
+                        state: 1,
+                        rand: Math.random()
+                    }, '', urlValue);
+                    // history.pushState function is used to add history state.
+                    // It takes three parameters: a state object, a title (which is currently ignored), and (optionally) a URL.
+                }
+            }
+        }
+
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        function removeQueryString(key) {
+            if (history.pushState) {
+                var urlValue = document.location.href;
+
+                // Get query string value
+                var searchUrl = location.search;
+
+                if (key != "") {
+                    oldValue = getParameterByName(key);
+                    removeVal = key + "=" + oldValue;
+                    if (searchUrl.indexOf('?' + removeVal + '&') != "-1") {
+                        urlValue = urlValue.replace('?' + removeVal + '&', '?');
+                    } else if (searchUrl.indexOf('&' + removeVal + '&') != "-1") {
+                        urlValue = urlValue.replace('&' + removeVal + '&', '&');
+                    } else if (searchUrl.indexOf('?' + removeVal) != "-1") {
+                        urlValue = urlValue.replace('?' + removeVal, '');
+                    } else if (searchUrl.indexOf('&' + removeVal) != "-1") {
+                        urlValue = urlValue.replace('&' + removeVal, '');
+                    }
+                } else {
+                    var searchUrl = location.search;
+                    urlValue = urlValue.replace(searchUrl, '');
+                }
+
+                history.pushState({
+                    state: 1,
+                    rand: Math.random()
+                }, '', urlValue);
             }
         }
     </script>

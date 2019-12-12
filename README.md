@@ -33,7 +33,7 @@ class Logs extends CI_Controller
 
     public function __construct()
 	{
-        parent::__construct();
+        parent::__construct(); 
         $this->load->helper('url');
         $this->logViewer = new \CI_Telescope\CI_Telescope();
     }
@@ -42,18 +42,12 @@ class Logs extends CI_Controller
 	{
         echo $this->logViewer->show();
     }
-    
+
     // --------------------------------------------------------------------
 
-    public function get_last_update()
+    public function get_last_logs()
     {
-        $file_name = $this->input->get('f');
-
-        $file_name = base64_decode($file_name);
-
-        $last_modified = $this->logViewer->get_last_modified($file_name);
-
-        echo $last_modified;
+        echo $this->logViewer->get_last_logs();
     }
 }
 ```
