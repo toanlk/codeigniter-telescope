@@ -10703,7 +10703,8 @@
         }
 
         #indexScreen td {
-            vertical-align: middle !important
+            vertical-align: middle !important;
+            word-break: break-all;
         }
 
         .card-bg-secondary {
