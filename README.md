@@ -51,3 +51,9 @@ class Logs extends CI_Controller
     }
 }
 ```
+
+```
+git tag 1.0.1
+git push origin 1.0.1
+git push --tags
+```

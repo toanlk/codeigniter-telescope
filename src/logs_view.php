@@ -10913,9 +10913,7 @@
                             <?php foreach ($files as $file) : ?>
                                 <li class="nav-item">
                                     <a href="?f=<?= base64_encode($file['filename']); ?>" data-id="<?= base64_encode($file['filename']); ?>" data-id="laravel-log" class="nav-link <?= ($currentFile == $file['filename']) ? "active" : "" ?>">
-                                        <div>
-                                            <div class="log-file-name"><?= $file['filename']; ?></div>
-                                        </div>
+                                        <div class="log-file-name"><?= $file['filename']; ?></div>
                                         <div class="d-flex align-items-center">
                                             <span class="log-file-size mr-2"><?= $file['filesize']; ?></span>
                                             <i class="fas fa-ellipsis-v log-file-menu"></i>
@@ -10957,7 +10955,7 @@
                                                 </span>
                                             </td>
                                             <td class="table-fit"><?= $log['date']; ?></td>
-                                            <td class="log-message" title="Click to expand"><?= $log['content']; ?></td>
+                                            <td class="log-message" title="Click to expand"><?= $log['content'] ?><?= !empty($log['extra']) ? ' ...' : '' ?></td>
                                         </tr>
                                         <?php if(!empty($log['extra'])):?>
                                         <tr class="log-details" id="details-<?=$key?>" style="display: none;">
@@ -10965,14 +10963,10 @@
                                                 <div class="log-details-content">
                                                     <div class="log-details-header">
                                                         <span class="log-details-title"><?= $log['content']; ?></span>
-                                                        <button class="btn btn-sm btn-outline-secondary copy-log-btn"
-                                                            title="Copy link to this log entry">
-                                                            <i class="fas fa-link"></i> Copy link to this log entry
-                                                        </button>
                                                     </div>
                                                     <div class="log-details-body">
                                                         <div class="log-stack-trace">
-                                                            <?= $log['extra']; ?>
+                                                            <?= !empty($log['full_content']) ? $log['full_content'] : $log['extra']; ?>
                                                         </div>
                                                     </div>
                                                 </div>
