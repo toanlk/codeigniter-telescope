@@ -56,7 +56,7 @@ class CI_Telescope
     const CI_LOG_VIEW_FILE_PATH = "ci_telescope/logs_view";
 
     const MAX_LOG_SIZE = 52428800; // 50MB
-    const MAX_STRING_LENGTH = 300; // 300 chars
+    const MAX_STRING_LENGTH = 140; // 140 chars
     const MAX_LOG_LINE = 5000;
 
     /**
@@ -315,6 +315,7 @@ class CI_Telescope
                 if (strlen($logMessage) > self::MAX_STRING_LENGTH) {
                     $data['content'] = substr($logMessage, 0, self::MAX_STRING_LENGTH);
                     $data["extra"] = substr($logMessage, (self::MAX_STRING_LENGTH + 1));
+                    $data["full_content"] = $logMessage;
                 } else {
                     $data["content"] = $logMessage;
                 }
