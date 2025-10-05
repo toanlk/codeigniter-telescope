@@ -10588,7 +10588,7 @@
 
         .card .table.penultimate-column-right td:nth-last-child(2),
         .card .table.penultimate-column-right th:nth-last-child(2) {
-            text-align: right
+            text-align: left
         }
 
         .card .table td.table-fit,
@@ -10708,6 +10708,96 @@
             word-break: break-all;
         }
 
+        /* Log line limiting and expansion styles */
+        .log-message {
+            max-width: 600px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .log-message:hover {
+            background-color: #f8f9fa;
+        }
+
+        .log-row {
+            cursor: pointer;
+        }
+
+        .log-row:hover {
+            background-color: #f8f9fa;
+        }
+
+        .log-details {
+            background-color: #f8f9fa;
+            border-top: none;
+        }
+
+        .log-details td {
+            padding: 0 !important;
+            border-top: none !important;
+        }
+
+        .log-details-content {
+            background-color: #f8f9fa;
+            padding: 1rem 1.25rem;
+            margin: 0;
+            border-left: 3px solid #e5e7eb;
+        }
+
+        .log-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .log-details-title {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .copy-log-btn {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-color: #d1d5db;
+            color: #6b7280;
+        }
+
+        .copy-log-btn:hover {
+            background-color: #ffffff;
+            border-color: #9ca3af;
+            color: #374151;
+        }
+
+        .log-details-body {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .log-stack-trace {
+            color: #374151;
+        }
+
+        .log-stack-trace .text-muted {
+            color: #6b7280 !important;
+            font-weight: 500;
+        }
+
+        .log-row.expanded {
+            background-color: #f3f4f6;
+        }
+
+        .log-row.expanded .log-message {
+            font-weight: 500;
+        }
+
         .card-bg-secondary {
             background: #f1f7fa
         }
@@ -10762,12 +10852,12 @@
                     <ul class="nav flex-column" id="lstFiles">
                         <li class="nav-item">
                             <a href="#" data-id="" class="nav-link d-flex align-items-center pt-0 active">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path
-                                        d="M0 3c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3zm2 2v12h16V5H2zm8 3l4 5H6l4-5z">
-                                    </path>
-                                </svg>
-                                <span>Sample Log File</span>
+                                <span>log-2025-10-04.php</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="" class="nav-link d-flex align-items-center pt-0 active">
+                                <span>log-2025-09-04.php</span>
                             </a>
                         </li>
                     </ul>
@@ -10782,18 +10872,75 @@
                         <table id="indexScreen" class="table table-hover table-sm mb-0 penultimate-column-right">
                             <thead>
                                 <tr>
-                                    <th scope="col">Message</th>
                                     <th scope="col">Level</th>
-                                    <th scope="col">Happened</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Description</th>
                                 </tr>
                             </thead>
                             <tbody id="logData">
-                                <tr>
-                                    <td>Sample log message</td>
+                                <tr class="log-row" data-log-id="1">
                                     <td class="table-fit">
                                         <span class="badge font-weight-light badge-info">info</span>
                                     </td>
                                     <td class="table-fit">2024-01-01 12:00:00</td>
+                                    <td class="log-message" title="Click to expand">[test@example.com]
+                                        credentials_not_correct</td>
+                                </tr>
+                                <tr class="log-details" id="details-1" style="display: none;">
+                                    <td colspan="3">
+                                        <div class="log-details-content">
+                                            <div class="log-details-header">
+                                                <span class="log-details-title">[test@example.com]
+                                                    credentials_not_correct</span>
+                                                <button class="btn btn-sm btn-outline-secondary copy-log-btn"
+                                                    title="Copy link to this log entry">
+                                                    <i class="fas fa-link"></i> Copy link to this log entry
+                                                </button>
+                                            </div>
+                                            <div class="log-details-body">
+                                                <div class="log-stack-trace">
+                                                    <strong>HTTP request:</strong><br>
+                                                    <span class="text-muted">User ID:</span> guest<br>
+                                                    <span class="text-muted">Request:</span> POST
+                                                    http://127.0.0.1/login<br>
+                                                    <span class="text-muted">Agent:</span> Mozilla/5.0 (Windows NT 10.0;
+                                                    Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0
+                                                    Safari/537.36
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="log-row" data-log-id="2">
+                                    <td class="table-fit">
+                                        <span class="badge font-weight-light badge-danger">error</span>
+                                    </td>
+                                    <td class="table-fit">2022-07-09 23:57:02</td>
+                                    <td class="log-message" title="Click to expand">SQLSTATE[HY000]: Invalid parameter
+                                        number (SQL: ANALYZE TABLE `Action toplist`)</td>
+                                </tr>
+                                <tr class="log-details" id="details-2" style="display: none;">
+                                    <td colspan="3">
+                                        <div class="log-details-content">
+                                            <div class="log-details-header">
+                                                <span class="log-details-title">SQLSTATE[HY000]: Invalid parameter
+                                                    number</span>
+                                                <button class="btn btn-sm btn-outline-secondary copy-log-btn"
+                                                    title="Copy link to this log entry">
+                                                    <i class="fas fa-link"></i> Copy link to this log entry
+                                                </button>
+                                            </div>
+                                            <div class="log-details-body">
+                                                <div class="log-stack-trace">
+                                                    <strong>SQL Error:</strong><br>
+                                                    <span class="text-muted">Query:</span> ANALYZE TABLE `Action
+                                                    toplist`<br>
+                                                    <span class="text-muted">Error Code:</span> HY000<br>
+                                                    <span class="text-muted">Environment:</span> production
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -10854,6 +11001,36 @@
                     $(this).addClass("active");
                 }
             });
+
+            // Add click functionality for log rows to expand/collapse details
+            $(document).on('click', '.log-row', function (e) {
+                e.preventDefault();
+                var $row = $(this);
+                var logId = $row.data('log-id');
+                var $detailsRow = $('#details-' + logId);
+
+                // Check if this row is already expanded
+                if ($row.hasClass('expanded')) {
+                    // Collapse this row
+                    $row.removeClass('expanded');
+                    $detailsRow.hide();
+                } else {
+                    // Collapse all other expanded rows first
+                    $('.log-row.expanded').removeClass('expanded');
+                    $('.log-details').hide();
+
+                    // Expand this row
+                    $row.addClass('expanded');
+                    $detailsRow.show();
+                }
+            });
+
+            // Copy log link functionality
+            $(document).on('click', '.copy-log-btn', function (e) {
+                e.stopPropagation();
+                // Copy functionality would go here
+                alert('Log link copied to clipboard!');
+            });
         });
 
         function checkChange() {
@@ -10882,12 +11059,35 @@
                                     var $level = item.level.toLowerCase();
                                     var $levelClass = $level == 'error' || $level == 'fatal' ? 'badge-danger' : 'badge-info';
                                     var $levelContent = '<span class="badge font-weight-light ' + $levelClass + '">' + $level + '</span>';
-                                    var $tr = $('<tr>').append(
-                                        $('<td>').text(item.content),
+                                    var logId = 'log-' + i;
+                                    var $tr = $('<tr class="log-row">').attr('data-log-id', logId).append(
                                         $('<td class="table-fit">').html($levelContent),
-                                        $('<td class="table-fit">').text(item.date)
+                                        $('<td class="table-fit">').text(item.date),
+                                        $('<td class="log-message" title="Click to expand">').text(item.content)
                                     );
-                                    $('#logData').append($tr);
+
+                                    var $detailsRow = $('<tr class="log-details" id="details-' + logId + '" style="display: none;">').append(
+                                        $('<td colspan="3">').html(
+                                            '<div class="log-details-content">' +
+                                            '<div class="log-details-header">' +
+                                            '<span class="log-details-title">' + item.content + '</span>' +
+                                            '<button class="btn btn-sm btn-outline-secondary copy-log-btn" title="Copy link to this log entry">' +
+                                            '<i class="fas fa-link"></i> Copy link to this log entry' +
+                                            '</button>' +
+                                            '</div>' +
+                                            '<div class="log-details-body">' +
+                                            '<div class="log-stack-trace">' +
+                                            '<strong>Log Details:</strong><br>' +
+                                            '<span class="text-muted">Level:</span> ' + item.level + '<br>' +
+                                            '<span class="text-muted">Time:</span> ' + item.date + '<br>' +
+                                            '<span class="text-muted">Message:</span> ' + item.content +
+                                            '</div>' +
+                                            '</div>' +
+                                            '</div>'
+                                        )
+                                    );
+
+                                    $('#logData').append($tr).append($detailsRow);
                                 });
                             } else {
                                 $('#indexScreen').addClass('d-none');
