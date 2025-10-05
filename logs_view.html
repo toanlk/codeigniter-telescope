@@ -6,10 +6,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="hEWQQjOhfmc9G0PflSRObQLRaP5FneSJW5uS5ru5">
-    <link rel="shortcut icon"
-        href="https://cloud.google.com/_static/47b8b6d10c/images/cloud/icons/favicons/onecloud/favicon.ico">
 
-    <title>Telescope - Codeigniter</title>
+    <title>Telescope - CodeIgniter</title>
 
     <!-- Style sheets-->
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -10520,24 +10518,78 @@
             height: 1.7rem
         }
 
-        .sidebar .nav-item a {
-            color: #2a5164;
-            padding: .5rem 0
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            padding: 0;
+            overflow-y: auto;
         }
 
-        .sidebar .nav-item a svg {
-            width: 1rem;
-            height: 1rem;
-            margin-right: 15px;
-            fill: #c3cbd3
+        .sidebar .nav {
+            padding: 0;
         }
 
-        .sidebar .nav-item a.active {
-            color: #4040c8
+        .sidebar .nav-item {
+            margin: 0;
+            border-bottom: 1px solid #f3f4f6;
         }
 
-        .sidebar .nav-item a.active svg {
-            fill: #4040c8
+        .sidebar .nav-item:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar .nav-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            color: #374151;
+            text-decoration: none;
+            border: none;
+            border-radius: 0;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #f9fafb;
+            color: #374151;
+            text-decoration: none;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #f0fdf4;
+            color: #16a34a;
+            border-left: 3px solid #16a34a;
+        }
+
+        .log-file-name {
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .log-file-size {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            font-weight: 400;
+        }
+
+        .sidebar .nav-link.active .log-file-size {
+            color: #16a34a;
+        }
+
+        .log-file-menu {
+            color: #d1d5db;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .log-file-menu:hover {
+            color: #6b7280;
+            background-color: #f3f4f6;
         }
 
         .card {
@@ -10822,7 +10874,15 @@
 
         <div class="container mb-5">
             <div class="d-flex align-items-center py-4 header">
-                <img src="https://www.gstatic.com/images/branding/product/1x/google_cloud_48dp.png" width="26">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="#ff3b30" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 21l6 -5l6 5" />
+                    <path d="M12 13v8" />
+                    <path
+                        d="M3.294 13.678l.166 .281c.52 .88 1.624 1.265 2.605 .91l14.242 -5.165a1.023 1.023 0 0 0 .565 -1.456l-2.62 -4.705a1.087 1.087 0 0 0 -1.447 -.42l-.056 .032l-12.694 7.618c-1.02 .613 -1.357 1.897 -.76 2.905z" />
+                    <path d="M14 5l3 5.5" />
+                </svg>
+
 
                 <h4 class="mb-0 ml-2">Codeigniter Telescope</h4>
 
@@ -10851,13 +10911,201 @@
                 <div class="col-2 sidebar">
                     <ul class="nav flex-column" id="lstFiles">
                         <li class="nav-item">
-                            <a href="#" data-id="" class="nav-link d-flex align-items-center pt-0 active">
-                                <span>log-2025-10-04.php</span>
+                            <a href="#" data-id="laravel-log" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">2.59 MB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" data-id="" class="nav-link d-flex align-items-center pt-0 active">
-                                <span>log-2025-09-04.php</span>
+                            <a href="#" data-id="laravel-2022-07-28" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-07-28.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">104.80 MB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-07-26" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-07-26.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">50.40 MB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-07-24" class="nav-link active">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-07-24.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">1,009.20 MB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-07-11" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-07-11.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">31.76 MB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-07-09" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-07-09.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">72.09 MB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-03-06" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-03-06.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">42.57 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-03-05" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-03-05.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">42.57 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-03-02" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-03-02.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">42.57 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-03-01" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-03-01.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">295.74 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-02-05" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-02-05.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">38.59 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-01-28" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-01-28.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">129.88 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-01-27" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-01-27.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">79.21 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-01-23" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-01-23.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">93.63 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-01-19" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-01-19.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">45.88 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-01-16" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-01-16.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">368.74 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-01-15" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-01-15.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">234.77 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" data-id="laravel-2022-01-11" class="nav-link">
+                                <div>
+                                    <div class="log-file-name">laravel-2022-01-11.log</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="log-file-size mr-2">454.05 KB</span>
+                                    <i class="fas fa-ellipsis-v log-file-menu"></i>
+                                </div>
                             </a>
                         </li>
                     </ul>
@@ -11030,6 +11278,33 @@
                 e.stopPropagation();
                 // Copy functionality would go here
                 alert('Log link copied to clipboard!');
+            });
+
+            // Sidebar file selection functionality
+            $(document).on('click', '.sidebar .nav-link', function (e) {
+                e.preventDefault();
+
+                // Remove active class from all links
+                $('.sidebar .nav-link').removeClass('active');
+
+                // Add active class to clicked link
+                $(this).addClass('active');
+
+                // Get the file ID and load the log file
+                var fileId = $(this).data('id');
+                $('#currentFile').val(fileId);
+
+                // Update the main content area
+                loadLogFile(fileId);
+            });
+
+            // Log file menu functionality
+            $(document).on('click', '.log-file-menu', function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                // Show context menu or dropdown
+                alert('File menu options would appear here');
             });
         });
 
