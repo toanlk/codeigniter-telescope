@@ -164,7 +164,7 @@ class CI_Telescope
         if (!is_null($fileName)) {
             $currentFile = $this->logFolderPath . "/" . basename(base64_decode($fileName));
         } else if (is_null($fileName) && !empty($files)) {
-            $currentFile = $this->logFolderPath . "/" . $files[0];
+            $currentFile = $this->logFolderPath . "/" . $files[0]['filename'];
         } else {
             $currentFile = null;
         }
@@ -454,7 +454,7 @@ class CI_Telescope
      * make sure the latest log file is in the first index
      *
      * @param boolean. If true returns the basename of the files otherwise full path
-     * @returns array of file
+     * @returns array of file with filename and formatted filesize
      * */
     private function getFiles($basename = true)
     {
@@ -463,13 +463,36 @@ class CI_Telescope
 
         $files = array_reverse($files);
         $files = array_filter($files, 'is_file');
-        if ($basename && is_array($files)) {
-            foreach ($files as $k => $file) {
-                $files[$k] = basename($file);
+        
+        $result = [];
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                $filename = $basename ? basename($file) : $file;
+                $filesize = filesize($file);
+                $result[] = [
+                    'filename' => $filename,
+                    'filesize' => $this->formatFileSize($filesize)
+                ];
             }
         }
 
-        return array_values($files);
+        return $result;
+    }
+
+    /**
+     * Format file size in human readable format (KB, MB)
+     * @param int $bytes
+     * @return string
+     */
+    private function formatFileSize($bytes)
+    {
+        if ($bytes >= 1048576) {
+            return number_format($bytes / 1048576, 2) . ' MB';
+        } elseif ($bytes >= 1024) {
+            return number_format($bytes / 1024, 2) . ' KB';
+        } else {
+            return $bytes . ' bytes';
+        }
     }
 
     /**
@@ -563,7 +586,8 @@ class CI_Telescope
     {
         $lastModifiedTime = 0;
         foreach ($files as $file) {
-            $currentModifiedTime = $this->get_last_modified($file);
+            $filename = is_array($file) ? $file['filename'] : $file;
+            $currentModifiedTime = $this->get_last_modified($filename);
             if ($currentModifiedTime > $lastModifiedTime) {
                 $lastModifiedTime = $currentModifiedTime;
             }
@@ -602,7 +626,7 @@ class CI_Telescope
             if (!empty($file_name)) {
                 $currentFile = base64_decode($file_name);;
             } else {
-                $currentFile = $files[0];
+                $currentFile = $files[0]['filename'];
             }
 
             $currentFile = $this->logFolderPath . "/" . $currentFile;
