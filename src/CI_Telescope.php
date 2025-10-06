@@ -342,6 +342,21 @@ class CI_Telescope
                 //               ]);
             }
         }
+        
+        foreach ($superLog as $key => $log) {
+            if(!empty($log['extra'])) {
+                // Split into array by newline
+                $lines = explode("<br>", trim($log['extra']));
+
+                // Reverse the order
+                $reversed = array_reverse($lines);
+
+                // Join back into a single string
+                $log['extra'] = implode("<br>", $reversed);
+
+                $superLog[$key] = $log;
+            }
+        }
 
         return $superLog;
     }
