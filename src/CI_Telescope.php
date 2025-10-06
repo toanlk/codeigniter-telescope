@@ -315,7 +315,7 @@ class CI_Telescope
 
                 if (strlen($logMessage) > self::MAX_STRING_LENGTH) {
                     $data['content'] = substr($logMessage, 0, self::MAX_STRING_LENGTH);
-                    // $data["extra"] = substr($logMessage, (self::MAX_STRING_LENGTH + 1));
+                    $data["extra"] = substr($logMessage, (self::MAX_STRING_LENGTH + 1));
                     $data["full_content"] = $logMessage;
                 } else {
                     $data["content"] = $logMessage;
