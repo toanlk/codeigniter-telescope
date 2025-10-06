@@ -56,7 +56,7 @@ class CI_Telescope
     const CI_LOG_VIEW_FILE_PATH = "ci_telescope/logs_view";
 
     const MAX_LOG_SIZE = 52428800; // 50MB
-    const MAX_STRING_LENGTH = 140; // 140 chars
+    const MAX_STRING_LENGTH = 100; // 140 chars
     const MAX_LOG_LINE = 5000;
 
     /**
@@ -291,6 +291,7 @@ class CI_Telescope
         // newest first
         $logs = array_reverse($logs);
 
+        $full_content = '';
         foreach ($logs as $k => $log) {
 
             if ($k > self::MAX_LOG_LINE) {
@@ -314,45 +315,33 @@ class CI_Telescope
 
                 if (strlen($logMessage) > self::MAX_STRING_LENGTH) {
                     $data['content'] = substr($logMessage, 0, self::MAX_STRING_LENGTH);
-                    $data["extra"] = substr($logMessage, (self::MAX_STRING_LENGTH + 1));
+                    // $data["extra"] = substr($logMessage, (self::MAX_STRING_LENGTH + 1));
                     $data["full_content"] = $logMessage;
                 } else {
                     $data["content"] = $logMessage;
                 }
 
-                array_push($superLog, $data);
-            } else if (!empty($superLog)) {
-                // this log line is a continuation of previous log line
-                // so let's add them as extra
-                $prevLog = $superLog[count($superLog) - 1];
-                $extra = (array_key_exists("extra", $prevLog)) ? $prevLog["extra"] : "";
-                $prevLog["extra"] = $extra . "<br>" . $log;
-                $superLog[count($superLog) - 1] = $prevLog;
+                if(!empty($data["content"]) && !empty($full_content)) {
+                    $data["full_content"] = $full_content;
+                    $full_content = '';
+                }
+
+                array_push($superLog, $data); 
             } else {
-                //this means the file has content that are not logged
-                //using log_message()
-                //they may be sensitive! so we are just skipping this
-                //other we could have just insert them like this
-                //               array_push($superLog, [
-                //                   "level" => "INFO",
-                //                   "date" => "",
-                //                   "icon" => self::$levelsIcon["INFO"],
-                //                   "class" => self::$levelClasses["INFO"],
-                //                   "content" => $log
-                //               ]);
+                $full_content = $full_content . "<br>" . $log;
             }
         }
         
         foreach ($superLog as $key => $log) {
-            if(!empty($log['extra'])) {
+            if(!empty($log['full_content'])) {
                 // Split into array by newline
-                $lines = explode("<br>", trim($log['extra']));
+                $lines = explode("<br>", trim($log['full_content']));
 
                 // Reverse the order
                 $reversed = array_reverse($lines);
 
                 // Join back into a single string
-                $log['extra'] = implode("<br>", $reversed);
+                $log['full_content'] = implode("<br>", $reversed);
 
                 $superLog[$key] = $log;
             }

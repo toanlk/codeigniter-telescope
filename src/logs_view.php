@@ -10955,9 +10955,9 @@
                                                 </span>
                                             </td>
                                             <td class="table-fit"><?= $log['date']; ?></td>
-                                            <td class="log-message" title="Click to expand"><?= $log['content'] ?><?= !empty($log['extra']) ? ' ...' : '' ?></td>
+                                            <td class="log-message" title="Click to expand"><?= $log['content'] ?><?= !empty($log['full_content']) ? ' ...' : '' ?></td>
                                         </tr>
-                                        <?php if(!empty($log['extra'])):?>
+                                        <?php if (!empty($log['full_content'])):?>
                                         <tr class="log-details" id="details-<?=$key?>" style="display: none;">
                                             <td colspan="3">
                                                 <div class="log-details-content">
@@ -10966,7 +10966,7 @@
                                                     </div>
                                                     <div class="log-details-body">
                                                         <div class="log-stack-trace">
-                                                            <?= !empty($log['full_content']) ? $log['full_content'] : $log['extra']; ?>
+                                                            <?= !empty($log['full_content']) ? $log['full_content'] : ''; ?>
                                                         </div>
                                                     </div>
                                                 </div>
